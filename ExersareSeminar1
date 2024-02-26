@@ -1,0 +1,66 @@
+//scris in xcode, de aceea bibliotecile incluse difera
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Eveniment
+{
+    char* denumire;
+    int data[3];
+    int numarArtisti;
+    char** numeArtisti;
+};
+
+struct Eveniment initializareEv(char* denumire, int data[3], int numarArtisti, char** numeArtisti)
+{
+    struct Eveniment ev;
+    ev.denumire=(char*)malloc(strlen(denumire)+1);
+    strcpy(ev.denumire, denumire);
+    for(int i=0;i<3;i++)
+        ev.data[i]=data[i];
+    ev.numarArtisti=numarArtisti;
+    ev.numeArtisti=(char**)malloc(sizeof(char*)*numarArtisti);
+    for(int i=0;i<numarArtisti;i++)
+    {
+        ev.numeArtisti[i]=(char*)malloc(strlen(numeArtisti[i])+1);
+        strcpy(ev.numeArtisti[i],numeArtisti[i]);
+    }
+    return ev;
+}
+
+void afisare(struct Eveniment ev)
+{
+    printf("\nDenumire eveniment: %s",ev.denumire);
+    printf("\nData: ");
+    for(int i=0;i<3;i++)
+        printf("%d/",ev.data[i]);
+    printf("\nNumar artisti: %d", ev.numarArtisti);
+    printf("\nArtistii: ");
+    for(int i=0;i<ev.numarArtisti;i++)
+        printf("%s, ",ev.numeArtisti[i]);
+    printf("\n");
+}
+
+void stergeEveniment(struct Eveniment* e)
+{
+    free(e->denumire);
+
+    for (int i = 0; i < e->numarArtisti; i++) {
+        free(e->numeArtisti[i]);
+    }
+    
+    free(e->numeArtisti);
+    e->denumire=NULL;
+    e->numeArtisti=NULL;
+}
+
+
+int main(void)
+{
+    struct Eveniment e;
+    int data[3]={2,4,2024};
+    char* numeArtisti[4]={"Delia", "Andra", "Smiley", "Brenciu"};
+    e=initializareEv("Untold", data, 4, numeArtisti);
+    afisare(e);
+    return 0;
+}
