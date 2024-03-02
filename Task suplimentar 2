@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Piata
+{
+    char* nume;
+    float suprafata;
+    int esteInBucuresti;
+    
+};
+
+struct Piata initializarePiata(char* nume, float suprafata, int esteInBucuresti)
+{
+    struct Piata p;
+    p.nume=(char*)malloc(sizeof(char*)*strlen(nume)+1);
+    strcpy(p.nume, nume);
+    p.suprafata=suprafata;
+    p.esteInBucuresti=esteInBucuresti;
+    return p;
+}
+
+void afisarePiata(struct Piata p)
+{
+    printf("\nNume: %s", p.nume);
+    printf("\nSuprafata: %.2f", p.suprafata);
+    if(p.esteInBucuresti==1)
+        printf("\nSe afla in capitala: DA");
+    else
+        printf("\nSe afla in capitala: NU");
+    printf("\n");
+}
+
+void afisareVector(int nrPiete, struct Piata* p)
+{
+    for(int i=0;i<nrPiete;i++)
+        afisarePiata(p[i]);
+}
+
+struct Piata setSuprafata(struct Piata p ,float suprafata)
+{
+    if(suprafata!=p.suprafata && suprafata!=0)
+        p.suprafata=suprafata;
+    return p;
+}
+
+struct Piata* copierePieteMari(struct Piata* p, int nrPiete, int* nrPieteMari)
+{
+    int cnt=0;
+    struct Piata* pieteMari;
+    for(int i=0;i<nrPiete;i++)
+        if(p[i].suprafata>300)
+            cnt++;
+    pieteMari=(struct Piata*)malloc(sizeof(struct Piata)*cnt);
+    for(int i=0;i<nrPiete;i++)
+    {
+        if(p[i].suprafata>300)
+            pieteMari[(*nrPieteMari)++]=p[i];
+    }
+    return pieteMari;
+}
+
+struct Piata* concatenareVect(struct Piata* p1, struct Piata* p2, int nrEl1, int nrEl2, int* elemVFinal)
+{
+    struct Piata* v=(struct Piata*)malloc(sizeof(struct Piata)*(nrEl1+nrEl2));
+    for(int i=0;i<nrEl1;i++)
+    {
+        v[(*elemVFinal)++]=p1[i];
+    }
+    for(int i=0;i<nrEl2;i++)
+    {
+        v[(*elemVFinal)++]=p2[i];
+    }
+    return v;
+}
+
+int main(void)
+{
+    struct Piata p1;
+    p1=initializarePiata("Matache", 607.75, 1);
+    p1=setSuprafata(p1, 605.75);
+    afisarePiata(p1);
+    
+    int nrPiete=5;
+    struct Piata* piete=(struct Piata*)malloc(sizeof(struct Piata)*nrPiete);
+    for(int i=0;i<nrPiete;i++)
+    {
+        piete[i]=initializarePiata("Piata", i*100.75, i%2);
+    }
+    afisareVector(nrPiete, piete);
+    printf("\n*******************************\n");
+    int nrPieteMari=0;
+    struct Piata* pieteMari=copierePieteMari(piete, nrPiete, &nrPieteMari);
+    afisareVector(nrPieteMari, pieteMari);
+    printf("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+    int elemVFinal=0;
+    struct Piata* concat=concatenareVect(piete, pieteMari, nrPiete, nrPieteMari, &elemVFinal);
+    afisareVector(elemVFinal, concat);
+    
+    return 0;
+}
